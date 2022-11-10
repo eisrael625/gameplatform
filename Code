@@ -1,0 +1,426 @@
+function initializeBubbleTrouble()
+--runs in main screen as program launches
+    points = 0
+    numBalls1=0
+    numBalls2=0
+    lost = 0
+    currModeChoice= nil
+    particles= {}
+    balls= {}
+    balls2 = {}
+    print("CLICK A MODE AND THEN CLICK GO ")
+    print("SURVIVAL- MOVE WITH BOTTOM BUTTONS OR TOUCH ABOVE BOTTOM BAR- DO NOT LET THE MAN BE HIT WITH THE BALL- BALL CAN TOUCH THE GROUND ")
+    print("HIGH SCORE- MOVE WITH BOTTOM BUTTONS OR TOUCH ABOVE BOTTOM BAR- DO NOT LET THE BALLS HIT THE GROUND")
+    g1= TheGuy(WIDTH/2)
+ – class function for the shooting guy
+    b1 = Button("right", Vec2(30,50), color(255,0,0), color(0,255,0), 60,30,1)
+    b1.action = function() b1BtnTouched()
+    end
+
+    b2 = Button("left", Vec2(WIDTH-30,50), color(255,0,0), color(0,255,0), 60,30,1)
+    b2.action = function() b2BtnTouched()
+    end
+    fire = Button("fire", Vec2(100,50), color(255,0,0), color(0,255,0), 60,60,2)
+    fire.action = function() fireBtnTouched()
+    end
+
+    fire2 = Button("fire", Vec2(WIDTH -100,50), color(255,0,0), color(0,255,0), 60,60,2)
+    fire2.action = function() fireBtnTouched()
+    end
+
+    Survival= Button2("Survival Mode", vec2(0, 0), 20, Vec2(WIDTH/2 -150 , 500),-1 , 200,60)
+    Highscore= Button2("High Score Mode",vec2(0, 0), 20, Vec2(WIDTH/2 +150 , 500), -1, 200,60)
+    Go = Button2("Go",vec2(0, 0), 20, Vec2(WIDTH/2, 50), -1, 400,120)
+--two modes that can be selected
+
+    xWorldMin = 0; xWorldMax = 350.0
+    yWorldMin = 0.0; yWorldMax = 350.0
+    – screen coordinates to use entire screen
+    xScreenMin = 0.0; xScreenMax = WIDTH
+    yScreenMin = 0.0; yScreenMax = HEIGHT
+    balls[1]= Ball(1, Vec2(math.random(100,WIDTH - 100) * (350/WIDTH), HEIGHT* (350/WIDTH)), Vec2(0,-10), Vec2(0, -10))
+    balls2[1]= Ball2(1, Vec2(WIDTH/2 * (350/WIDTH), HEIGHT* (350/WIDTH)), Vec2(0,-10), Vec2(0, -30))
+   – sets initial ball for either mode
+ BTRestart= Button2("Main Menu", vec2(0, 0), 20, Vec2(WIDTH/2 -150 , 600),-1 , 200,60)
+    BTReplay= Button2("Play Again", vec2(0, 0), 20, Vec2(WIDTH/2 +150 , 600),-1 , 200,60)
+end
+
+function runBubbleTrouble()
+    pushStyle()
+    – This sets a dark background color
+    if readLocalData("highscore",0)< points
+    then
+        saveLocalData("highscore", points)
+    end
+
+    HighScore = readLocalData("highscore",0)
+    background(40, 40, 50)
+   
+    if lost == 1
+    then
+        lose()
+-if lose, go to lose screen
+    elseif Go.state == -1 or currModeChoice == nil
+    then
+        initial()
+    elseif currModeChoice == 2 and Go.state==1
+    then
+        playHighscore() – mode 1
+    elseif currModeChoice == 1 and Go.state==1
+    then
+        playSurvival()
+--mode 2
+    end
+    popStyle()
+end
+function lose()
+--screen and settings when lose
+    lost = 1
+    background(0)
+    textMode(CENTER)
+    fill(255, 0, 0, 255)
+    font("AmericanTypewriter-Bold")
+    fontSize(80)
+    text("YOU LOSE", WIDTH/2, HEIGHT/2)
+    text("SCORE: ".. points, WIDTH/2, HEIGHT/2 -100)
+    fontSize(60)
+    text("HIGH SCORE: ".. math.floor(HighScore), WIDTH/2, HEIGHT/2 -200)
+    popStyle()
+    BTRestart:draw()
+    BTReplay:draw()
+    if BTRestart:getState() == 1
+    then
+        initializeBubbleTrouble()
+        BTReplay:deselect()
+        BubbleTrouble1:deselect()
+        Go:deselect()
+        gameMode=0
+        BTRestart:deselect()
+        popStyle()
+
+        resetAllButtons=true
+    end
+    if BTReplay:getState() == 1
+    then
+        initializeBubbleTrouble()
+        BTReplay:deselect()
+    end
+
+end
+function initial()
+    Survival:draw()
+    Highscore:draw()
+    Go:draw()
+
+end
+function playHighscore()
+    g1:move()
+    g1:draw()
+
+    b2:draw()
+    – This sets the line thickness
+    strokeWidth(5)
+    b1:draw()
+    fire:draw()
+    fire2:draw()
+    – Do your drawing here
+    –    p1:move(1/60)
+    –     p1:draw()
+    if #balls > 0
+    then
+        for i = 1, #balls
+        do
+            balls[i]:move(1/60)
+            balls[i]:draw()
+        end
+    end
+    if #particles > 0----
+    then
+        for i = 1, #particles
+        do
+            particles[i]:move(1/60)
+            particles[i]:draw()
+        end
+    end
+    –    for i = 1, #balls
+    –    do
+    if balls[1].next == true and points < 10
+    then
+        balls[1] = nil
+        balls[#balls + 1]= Ball(1, Vec2(math.random(100,WIDTH - 100) * (350/WIDTH), HEIGHT* (350/WIDTH)), Vec2(0,-20), Vec2(0, math.random(-20,-10)))
+        balls[1].next = false
+        numBalls1 = numBalls1 + 1
+    end
+    if #balls == 1 then
+        if balls[1].next == true – and balls[2].next == true
+        and points >= 10
+        then
+            balls[1] = nil
+            balls[1]= Ball(1, Vec2(math.random(100,WIDTH - 100) * (350/WIDTH), HEIGHT* (350/WIDTH)), Vec2(0,-20), Vec2(0, math.random(-20,-10)))
+            –    balls[1].next = false
+            numBalls1 = numBalls1 + 1
+
+            balls[2] = nil
+            balls[2]= Ball(1, Vec2(math.random(100,WIDTH - 100) * (350/WIDTH), HEIGHT* (350/WIDTH)), Vec2(0,-20), Vec2(0, math.random(-20,-10)))
+            –     balls[i].next = false
+            numBalls1 = numBalls1 + 1
+            ba =  #balls
+            balls[1].next = false
+            balls[2].next = false
+        end
+    end
+
+    if #balls > 1 then
+        if balls[1].next == true and balls[2].next == true
+        and points >= 10
+        then
+            balls[1] = nil
+            balls[1]= Ball(1, Vec2(math.random(100,WIDTH - 100) * (350/WIDTH), HEIGHT* (350/WIDTH)), Vec2(0,-20), Vec2(0, math.random(-20,-10)))
+            –    balls[1].next = false
+            numBalls1 = numBalls1 + 1
+
+            balls[2] = nil
+            balls[2]= Ball(1, Vec2(math.random(100,WIDTH - 100) * (350/WIDTH), HEIGHT* (350/WIDTH)), Vec2(0,-20), Vec2(0, math.random(-20,-10)))
+            –     balls[i].next = false
+            numBalls1 = numBalls1 + 1
+            ba =  #balls
+            balls[1].next = false
+            balls[2].next = false
+        end
+    end
+    –     end
+    – level 2
+    if points >= 5 and points <= 10
+    then
+        print("LEVEL 2")
+        balls[1].fnet = Vec2(0,math.random(-40,-20))
+    end
+    if points > 10 and points <= 15
+    then
+        print("LEVEL 3")
+        for i = 1, #balls
+        do
+            balls[i].fnet = Vec2(0,math.random(-40,-20))
+        end
+    end
+
+    if points > 15 – and points < 15
+    then
+        print("LEVEL 4")
+        for i = 1, #balls
+        do
+            balls[i].fnet = Vec2(0,-40)
+        end
+    end
+
+    –    end
+    if #balls == 1 then
+        if balls[1].lost == true – or balls[2].lost == true
+        then
+            – [[background(0)
+            textMode(CENTER)
+            fill(255, 0, 0, 255)
+            font("AmericanTypewriter-Bold")
+            fontSize(80)
+            text("YOU LOSE", WIDTH/2, HEIGHT/2)
+            text("SCORE: ".. points, WIDTH/2, HEIGHT/2 -100)
+            popStyle()]]
+            lose()
+        end
+    elseif #balls == 2
+    then
+        if balls[1].lost == true or balls[2].lost == true
+        then
+            – [[background(0)
+            textMode(CENTER)
+            fill(255, 0, 0, 255)
+            font("AmericanTypewriter-Bold")
+            fontSize(80)
+            text("YOU LOSE", WIDTH/2, HEIGHT/2)
+            text("SCORE: ".. points, WIDTH/2, HEIGHT/2 -100)
+            popStyle()]]
+            lose()
+        end
+    end
+    if lost ==0
+    then
+        pushStyle()
+        fill(255, 0, 0)
+        textMode(CENTER)
+        font("AmericanTypewriter-Bold")
+        fontSize(100)
+        text(points, WIDTH/2, HEIGHT/2)
+        popStyle()
+    end
+end
+function playSurvival()
+    g1:move()
+    g1:draw()
+
+    b2:draw()
+    – This sets the line thickness
+    strokeWidth(5)
+    b1:draw()
+    fire:draw()
+    fire2:draw()
+    – Do your drawing here
+    –    p1:move(1/60)
+    –     p1:draw()
+
+    if #balls2 > 0
+    then
+        for i = 1, #balls2
+        do
+            balls2[i]:move(1/60)
+            balls2[i]:draw()
+        end
+    end
+    if #particles > 0
+    then
+        for i = 1, #particles
+        do
+            particles[i]:move(1/60)
+            particles[i]:draw()
+        end
+    end
+    if balls2[1].next == true and points < 10
+    then
+        balls2[1] = nil
+        balls2[#balls2 + 1]= Ball2(1, Vec2(math.random(100,WIDTH - 100) * (350/WIDTH), HEIGHT* (350/WIDTH)), Vec2(0,-20), Vec2(0, math.random(-40,-10)))
+        balls2[1].next = false
+        – numBalls2 = numBalls2 + 1
+    end
+    if #balls2 == 1 then
+        if balls2[1].next == true – and balls[2].next == true
+        and points >= 10
+        then
+            balls2[1] = nil
+            balls2[1]= Ball2(1, Vec2(math.random(100,WIDTH - 100) * (350/WIDTH), HEIGHT* (350/WIDTH)), Vec2(0,-20), Vec2(0, math.random(-50,-10)))
+            –    balls[1].next = false
+            – numBalls1 = numBalls1 + 1
+
+            balls2[2] = nil
+            balls2[2]= Ball2(1, Vec2(math.random(100,WIDTH - 100) * (350/WIDTH), HEIGHT* (350/WIDTH)), Vec2(0,-20), Vec2(0, math.random(-50,-10)))
+            –     balls[i].next = false
+            – numBalls1 = numBalls1 + 1
+            – ba =  #balls
+            balls2[1].next = false
+            balls2[2].next = false
+        end
+    end
+
+    if #balls2 > 1 then
+        if balls2[1].next == true and balls2[2].next == true
+        and points >= 10
+        then
+            balls2[1] = nil
+            balls2[1]= Ball2(1, Vec2(math.random(100,WIDTH - 100) * (350/WIDTH), HEIGHT* (350/WIDTH)), Vec2(0,-20), Vec2(0, math.random(-50,-10)))
+            –    balls[1].next = false
+            –     numBalls1 = numBalls1 + 1
+
+            balls2[2] = nil
+            balls2[2]= Ball2(1, Vec2(math.random(100,WIDTH - 100) * (350/WIDTH), HEIGHT* (350/WIDTH)), Vec2(0,-20), Vec2(0, math.random(-50,-10)))
+            –     balls[i].next = false
+            – numBalls1 = numBalls1 + 1
+            –    ba =  #balls
+            balls2[1].next = false
+            balls2[2].next = false
+        end
+    end
+    for i = 1, #balls2
+    do
+        – [[ if balls2[i].next == true – and #balls2 < 3
+        then
+        balls2[#balls2+1]= Ball2(1, Vec2(math.random(100,WIDTH - 100) * (350/WIDTH), HEIGHT* (350/WIDTH)), Vec2(0,-20), Vec2(0, math.random(-20,-10)))
+        balls2[i].next = false
+
+    end
+        – level 2
+        print(balls2[i].p:getX() .. " " .. g1.locx *( 350/WIDTH))
+        if points > 5
+        then
+        balls2[i].fnet = Vec2(0,math.random(-40,-20))
+    end
+        ]]
+        if math.abs(balls2[i].p:getX() - (g1.locx * 350/WIDTH)) < (balls2[i].size/2 * (350/WIDTH)) + 10 and balls2[i].p:getY()< 80
+        then
+            lost = 1
+
+        end
+    end
+    – print(xloc)
+    if points > 5 and points < 10
+    then
+        print("LEVEL 2")
+        balls2[1].fnet = Vec2(0,math.random(-40,-20))
+    end
+    if points > 10 and points < 15
+    then
+        print("LEVEL 3")
+        for i = 1, #balls2
+        do
+            balls2[i].fnet = Vec2(0,math.random(-40,-20))
+        end
+    end
+
+    if points > 15 – and points < 15
+    then
+        print("LEVEL 4")
+        for i = 1, #balls2
+        do
+            balls2[i].fnet = Vec2(0,-40)
+        end
+    end
+    if lost ==0
+    then
+        pushStyle()
+        fill(255, 0, 0)
+        textMode(CENTER)
+        font("AmericanTypewriter-Bold")
+        fontSize(100)
+        text(points, WIDTH/2, HEIGHT/2)
+        popStyle()
+    end
+    pushStyle()
+end
+
+function b1BtnTouched()
+    g1.locx = g1.locx + 10
+end
+function b2BtnTouched()
+    g1.locx = g1.locx - 10
+end
+function fireBtnTouched()
+    local x = g1.locx * (350/WIDTH)
+    particles[#particles + 1] = Particle(1,Vec2(x,50), Vec2(0,100), Vec2(0,1))
+end
+
+function selectOnlyOneIncChoice(touch)
+    if Survival:touched(touch) and Survival:getState() == 1 then
+        currModeChoice = 1
+        Highscore:deselect()
+    elseif Highscore:touched(touch) and Highscore:getState() == 1 then
+        currModeChoice = 2
+        Survival:deselect()
+
+
+    end
+end
+
+function map(value, x1, x2, y1, y2)
+    m = (y2 - y1) / (x2 - x1)      – slope
+    b = y1 - m * x1                – y-intercept
+    return (m * value + b)
+end
+function worldToScreen(xW, yW)
+    local xS = map(xW, xWorldMin, xWorldMax, xScreenMin, xScreenMax)
+    local yS = map(yW, yWorldMin, yWorldMax, yScreenMin, yScreenMax)
+    return xS, yS
+end
+function worldToScreenX(xW)
+    local xS = map(xW, xWorldMin, xWorldMax, xScreenMin, xScreenMax)
+
+    return xS
+end
+Survival Mode:
+

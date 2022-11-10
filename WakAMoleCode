@@ -1,0 +1,102 @@
+– Wackamole
+
+ – Use this function to perform your initial setup
+function initializeWackAMole()
+    nextHole= true
+    Wackscore = 0
+    lastHole=3
+    WMDone=false
+    holes= {}
+    holes[1]= Hole(150,100,120,60,1)
+    holes[2]= Hole(WIDTH/2,100,120,60,1)
+    holes[3]= Hole(WIDTH/2+ (WIDTH/2 -150),100,120,60,1)
+    holes[4]= Hole( 150+ (WIDTH/2 -150)/2,400,100,50,1)
+    holes[5]= Hole( WIDTH/2+ (WIDTH/2 -150)/2,400,100,50,1)
+    holes[6]= Hole( WIDTH/2,650,80,40,1)
+--make all holes
+    time=30
+    WMRestart= Button2("Main Menu", vec2(0, 0), 20, Vec2(WIDTH/2 -300 , 600),-1 , 200,60)
+    WMReplay= Button2("Play Again", vec2(0, 0), 20, Vec2(WIDTH/2 +300 , 600),-1 , 200,60)
+end
+ – This function gets called once every frame
+function runWackAMole()
+
+    pushStyle()
+    if readLocalData("highscoreWack",0)< Wackscore
+    then
+        saveLocalData("highscoreWack", Wackscore)
+    end
+    HighScoreWack = readLocalData("highscoreWack",0)
+--show highscore
+    time = time - (1/60)
+   
+    background(13, 250, 32, 255)
+    
+    fill(255, 0, 0, 255)
+    fontSize(50)
+    textMode(CENTER)
+    text(math.floor(Wackscore).. " Points",WIDTH/2+200,HEIGHT-40)
+    text(math.floor(time).. " seconds",WIDTH/2-200,HEIGHT-40)
+
+
+    for i = 1, #holes
+    do
+        holes[i]:draw()
+    end
+    – Do your drawing here
+
+    if nextHole == true – if pressed on mole
+    then
+        numHole = math.random(1,#holes)
+        for i =1,7
+        do
+            if numHole == lastHole – different than previous
+            then
+                numHole = math.random(1,#holes)
+            end
+        end
+        lastHole=numHole
+        holes[numHole]:setState(2)
+        nextHole= false
+    end
+
+    i = i +1 – score
+    if time<0
+    then
+        WMDone= true
+        background(0, 101, 255, 255)
+        textSize(200)
+
+        fill(118, 58, 58, 255)
+        fontSize(100)
+        – text("YOU LOSE", WIDTH/2,HEIGHT/2)
+        – fontSize(50)
+        text("Final Score:" .. math.floor(Wackscore) ,WIDTH/2, HEIGHT/2)
+        fontSize(60)
+        text("High Score:" .. math.floor(HighScoreWack) ,WIDTH/2, HEIGHT/2 -100)
+        – text("Time Ellapsed " .. math.floor((scoreFinal)/2) .. " Seconds", WIDTH/2, HEIGHT/2+80)
+        WMReplay:draw()
+        WMRestart:draw()
+    end
+
+    if WMRestart:getState() == 1
+    then
+        initializeWackAMole()
+        WMReplay:deselect()
+        WackAMole:deselect()
+        Go:deselect()
+        gameMode=0
+        WMRestart:deselect()
+        popStyle()
+
+        resetAllButtons=true
+    end
+    if WMReplay:getState() == 1
+    then
+        initializeWackAMole()
+        WMReplay:deselect()
+    end
+    WMReplay:draw()
+    WMRestart:draw()
+    popStyle()
+end

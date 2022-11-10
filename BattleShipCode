@@ -1,0 +1,205 @@
+--# Main
+ – Battleship
+
+ – Use this function to perform your initial setup
+function initializeBattleShip()
+
+
+    circles = {}
+    boardBS = 7
+    bor1= Board(boardBS,1)
+    bor2 = Board(boardBS,2)
+    bor3 = Board(boardBS,3)
+    ships = {}
+
+    win = false
+
+    buildShip(3)
+    buildShip(3)
+    buildShip(4)
+    buildShip(2)
+    hit = vec2 (0,0)
+    shipsHit= {}
+    tries= 26
+    ready = -1 * #ships
+    qwerty=0 – variable that makes it restart until no overlap
+    parameter.boolean("hint", false)
+    print("Welcome to BattleShip. You have 3 ships to find. One 4 units, one 3, and one 2. You have " .. tries-1 .. " guesses")
+    print("Feel free to ask for a hint. The first time you do so you will lose 5 guesses. Then you could do it unlimited times")
+    parameter.boolean("reveal",false)
+    k= #ships
+    BSRestart= Button2("Main Menu", vec2(0, 0), 20, Vec2(WIDTH/2 -150 , 600),-1 , 200,60)
+    BSReplay= Button2("Play Again", vec2(0, 0), 20, Vec2(WIDTH/2 +150 , 600),-1 , 200,60)
+end
+
+ – This function gets called once every frame
+function runBattleShip()
+    pushStyle()
+    if qwerty <10
+    then
+        shipsHit={}
+        circles={}
+        print("hi")
+    end
+    qwerty=qwerty+1
+    for i = 1, #ships
+    do
+        if ships[i] == ships[i+1] or ships[i] == ships[i+2] or ships[i] == ships[i+3] or ships[i] == ships[i+4]or
+        ships[i] == ships[i+5] or ships[i] == ships[i+6] or ships[i] == ships[i+7]or ships[i] == ships[i+8] or ships[i] == ships[i+9] or ships[i] == ships[i+10] or ships[i] == ships[i+11] or ships[i] == ships[i-1] or ships[i] == ships[i-2] or ships[i] == ships[i-3] or ships[i] == ships[i-4]or
+        ships[i] == ships[i-5] or ships[i] == ships[i-6] or ships[i] == ships[i-7]or ships[i] == ships[i-8] or ships[i] == ships[i-9] or ships[i] == ships[i-10] or ships[i] == ships[i-11]
+        then
+            ships={}
+            buildShip(3)
+            buildShip(3)
+            buildShip(4)
+            buildShip(2)
+        end
+    end
+    
+    background(40, 40, 50)
+    bor1:draw()
+
+
+    – This sets the line thickness
+    strokeWidth(5)
+
+    for i = 1, #circles
+    do
+
+        pushStyle()
+        noStroke()
+        fill(0)
+        ellipse(circles[i].x, circles[i].y, 20)
+        popStyle()
+
+    end
+
+    if #shipsHit > 0
+    then
+        for i = 1, #shipsHit
+        do
+            fill(255,0,0)
+            noStroke()
+            rect(bor1:left() + (shipsHit[i].x -.5) * 50, bor1:bottom() + (shipsHit[i].y - .5) * 50, bor1.size * 50/ bor1.size)
+        end
+    end
+
+
+    if tries <= 1 – if lose
+    then
+        background(0)
+        pushStyle()
+        fill(255, 0, 0)
+        textMode(CENTER)
+        font("AmericanTypewriter-Bold")
+        fontSize(100)
+        text("YOU LOSE", WIDTH/2, HEIGHT/2)
+        popStyle()
+        bor2:draw()
+        for i = 1, #ships
+        do
+            fill(255,0,0)
+            noStroke()
+            rect(bor2:left() + (ships[i].x -.5) * 50, bor2:bottom() + (ships[i].y - .5) * 50, bor2.size * 50/ bor2.size)
+        end
+        for i = 1, #shipsHit
+        do
+            fill(0, 255, 82, 255)
+            noStroke()
+            rect(bor2:left() + (shipsHit[i].x -.5) * 50, bor2:bottom() + (shipsHit[i].y - .5) * 50, bor2.size * 50/ bor2.size)
+        end
+    elseif #shipsHit == k
+    then
+        background(0)
+        pushStyle()
+        fill(255, 0, 0)
+        textMode(CENTER)
+        font("AmericanTypewriter-Bold")
+        fontSize(100)
+        text("YOU WIN!!", WIDTH/2, HEIGHT/2)
+        popStyle()
+        win = true
+        reveal= false
+    end
+    if reveal ==true
+    then
+        bor3:draw()
+
+
+        for i = 1, #ships
+        do
+            fill(255,0,0)
+            noStroke()
+            rect(bor3:left() + (ships[i].x -.5) * 50, bor3:bottom() + (ships[i].y - .5) * 50, bor3.size * 50/ bor3.size)
+        end
+        for i = 1, #shipsHit
+        do
+            fill(0, 255, 82, 255)
+            noStroke()
+            rect(bor3:left() + (shipsHit[i].x -.5) * 50, bor3:bottom() + (shipsHit[i].y - .5) * 50, bor3.size * 50/ bor3.size)
+        end
+    end
+
+    sprite("Documents:battleship",WIDTH/2,700,WIDTH - 200,100)
+
+    BSRestart:draw()
+    BSReplay:draw()
+    if BSRestart:getState() == 1
+    then
+        initializeBattleShip()
+        BSReplay:deselect()
+        Battleship:deselect()
+        Go:deselect()
+        gameMode=0
+        BSRestart:deselect()
+        popStyle()
+
+        resetAllButtons=true
+    end
+    if BSReplay:getState() == 1
+    then
+        initializeBattleShip()
+        BSReplay:deselect()
+    end
+    popStyle()
+end
+
+
+vert = 1
+hor = 2
+function buildShip(size)
+    position = math.random (1,2)
+    if position == 1
+    then
+        x = math.random ( 1,boardBS)
+
+        y = math.random(1,boardBS-size+1)
+    elseif position == 2
+    then
+        x = math.random ( 1,boardBS-size+1)
+
+        y = math.random(1,boardBS)
+    end
+    for i = 1,size
+    do
+        if position == 1
+        then
+            ships [#ships+1] = vec2(x,y+i -1)
+        elseif  position == 2
+        then
+            ships [#ships+1] = vec2(x+i-1,y)
+        end
+    end
+end
+
+function shipHit(ship)
+    for i = 1 , k
+    do
+        if shipsHit[i].x == ship.x and shipsHit[i].y == ship.y
+        then
+            return true
+        else
+            return false
+        end
+    end
+end

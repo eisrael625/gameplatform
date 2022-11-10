@@ -1,0 +1,213 @@
+local function deviceShaking() – function that recognizes shaking
+    local acceleration = UserAcceleration
+    local intensity    = 1 – adjust min. shaking intensity to trigger this event!
+    if UserAcceleration.x > intensity or acceleration.y > intensity or acceleration.z > intensity then
+        _deviceShakeUpdatedAt = ElapsedTime
+        _deviceShakeBegunAt   = _deviceShakeBegunAt or ElapsedTime
+
+        – first shake triggers listening process
+        – listen if shaking continues for [x] seconds then device is considered shaking on purpose
+        if (ElapsedTime - _deviceShakeBegunAt) >= .5 then return true end
+    end
+    if _deviceShakeUpdatedAt and (ElapsedTime > (_deviceShakeUpdatedAt + .5)) then
+        _deviceShakeBegunAt   = nil
+        _deviceShakeUpdatedAt = nil
+    end
+    return false
+end
+
+
+
+function initializeEtchSketch()
+    FrontCam() – turns camera on because one could input live picture into app
+
+    local camWidth, camHeight = spriteSize( CAMERA )
+    asd=true – in order to make it start at current touch later
+    new=false
+    x= WIDTH
+    col=0 – color
+    y=HEIGHT
+    o=0 – joystick x
+    g=0 – joystick y
+    reset = false
+ 
+
+    parameter.integer("xjoystick",1,x)
+    parameter.integer("yjoystick",1,y)
+
+    – Creates a button to clear the output
+
+    parameter.integer("startmiddle",1,2)
+    parameter.integer("drawCircle",1,2)
+    parameter.integer("radius",1,200)
+    radius=50
+
+    backingMode(RETAINED)
+
+    print("Slide so can see all parameters. This is an etch-a-sketch! if you wish to start in the middle, switch the startmiddle button to the right, then back. if you wish to reset, switch swipetoreset to the right then back. if you wish to draw a circle, pick a radius then swipe drawcircle to the right then back. Enjoy!")
+    Front= Button("Front Camera", vec2(WIDTH/2-275, HEIGHT-30), color(255,0,0), color(0,255,0), WIDTH/4,60,1)
+    Front.action =  function() FrontCam()
+    end
+    Back= Button("Back Camera", vec2(WIDTH/2-86, HEIGHT-30), color(255,0,0), color(0,255,0), WIDTH/4,60,1)
+    Back.action=  function() BackCam()
+    end
+    TakePic= Button("Take Pic", vec2(WIDTH/2+103, HEIGHT-30), color(255,0,0), color(0,255,0), WIDTH/4,60,1)
+    TakePic.action=  function() takePhoto()
+    end
+
+    MainMenuES= Button("Main Menu", vec2(WIDTH/2+290, HEIGHT-30), color(255,0,0), color(0,255,0), WIDTH/4-30,60,1)
+    MainMenuES.action=  function() MainMenu1()
+    end
+end
+
+function runEtchSketch()
+    displayMode(STANDARD)
+    if o== nil
+    then
+        o=xjoystick
+    end
+    pushStyle()
+    displayMode(STANDARD)
+    local camWidth, camHeight = spriteSize( CAMERA )
+    if asdf < 10
+    then
+
+        asd= true
+        xjoystick= nil
+        yjoystick = nil
+        reset = true
+        reset = false
+        background(0)
+    end
+    Front:draw()
+    Back:draw()
+    TakePic:draw()
+    MainMenuES:draw()
+    asdf=asdf+1
+    if (col==0)  then – set color of line based on touch
+        stroke(255)
+    elseif (col ==1) then
+        stroke(255,0,0)
+    elseif (col ==2) then
+        stroke(255, 255, 255, 255)
+    elseif (col ==3) then
+        stroke(0,0,255)
+    elseif (col ==4) then
+        stroke(0,255,0)
+    elseif (col ==5) then
+        stroke(255, 0, 222, 255)
+    elseif (col ==6) then
+        stroke(249, 255, 0, 255)
+    elseif (col ==7) then
+        stroke(141, 0, 255, 255)
+    end
+    if (col==0)  then
+        fill(255)
+    elseif (col ==1) then
+        fill(255,0,0)
+    elseif (col ==2) then
+        fill(255, 255, 255, 255)
+    elseif (col ==3) then
+        fill(0,0,255)
+    elseif (col ==4) then
+        fill(0,255,0)
+    elseif (col ==5) then
+        fill(255, 0, 222, 255)
+    elseif (col ==6) then
+        fill(249, 255, 0, 255)
+    elseif (col ==7) then
+        fill(141, 0, 255, 255)
+    end
+
+
+    strokeWidth(10)
+    if xjoystick~= nil and startmiddle==1
+    then
+--draw
+        line(o, g, xjoystick, yjoystick)
+    end
+
+    o=xjoystick
+    g=yjoystick
+    if (swipeToReset==2) then
+        background (0)
+        xjoystick=xcurrent
+        yjoystick=ycurrent
+        radius=50
+    end
+    if (startmiddle==2) then
+        xjoystick= 375
+        yjoystick = HEIGHT/2
+        background(0)
+    end
+    if (drawCircle == 2)
+    then
+        noStroke()
+        ellipse(xjoystick,yjoystick,radius)
+    end
+    noStroke()
+    rectMode(CORNER)
+    fill(255)
+    ellipse(WIDTH-25, 25, 40)
+    fill(255,0,0)
+    rect(0,0,50,50)
+    fill(255, 255, 255, 255)
+    rect(51,0,50,50)
+    fill(0,0,255)
+    rect(102,0,50,50)
+    fill(0,255,0)
+    rect(153,0,50,50)
+    fill(255, 0, 222, 255)
+    rect(204,0,50,50)
+    fill(249, 255, 0, 255)
+    rect(255,0,50,50)
+    fill(141, 0, 255, 255)
+    rect(306,0,50,50)
+
+    if reset == true or deviceShaking()
+    then
+        background(0)
+        swipeToRestart=2
+        reset = false
+        swipeToRestart=1
+        col=0
+        asd= true
+        xjoystick= nil
+    end
+
+    if capturedImage ~= nil and a1 == true then
+        pushStyle()
+        spriteMode(CORNER)
+        – rotate(90)
+        sprite(capturedImage, 0, 0, WIDTH,HEIGHT)
+        popStyle()
+        a1=false
+    end
+    popStyle()
+end
+
+function takePhoto()
+    – supportedOrientations(LANDSCAPE_ANY)
+    capturedImage = image(CAMERA)
+    a1=true
+end
+function FrontCam()
+    cameraSource(CAMERA_FRONT)
+    print("front")
+end
+
+function BackCam()
+    cameraSource(CAMERA_BACK)
+end
+function TakePicCam()
+    takephoto()
+end
+function MainMenu1()
+    initializeEtchSketch()
+    EtchSketch:deselect()
+    Go:deselect()
+    gameMode=0
+    popStyle()
+
+    resetAllButtons=true
+end

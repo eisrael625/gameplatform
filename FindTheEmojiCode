@@ -1,0 +1,134 @@
+function initializeEmoji()
+    EMOx="😛" – apple version of emoji
+    print(EMOx)
+
+    nextEmoji = true
+    emoji= {}
+    pointsEmo=0
+    Emoj1= Button2E("😇", vec2(0, 0), 20, Vec2(WIDTH/2 -300 , 500),-1 , 150,60)
+    Emoj2= Button2E("😂",vec2(0, 0), 20, Vec2(WIDTH/2  , 500), -1, 150,60)
+
+    Emoj3= Button2E("😩",vec2(0, 0), 20, Vec2(WIDTH/2 + 300 , 500), -1, 150,60)
+    start=false
+    EMOJItime = 10
+    EMRestart= Button2("Main Menu", vec2(0, 0), 20, Vec2(WIDTH/2 -300 , 600),-1 , 200,60)
+    EMReplay= Button2("Play Again", vec2(0, 0), 20, Vec2(WIDTH/2 +300 , 600),-1 , 200,60)
+    – fill(255,0,0)
+end
+
+ – This function gets called once every frame
+function runEmoji()
+
+
+    if start == false
+    then
+        background(0)
+        Emoj1:draw()
+        Emoj2:draw()
+        Emoj3:draw()
+--if no emoji picked, allow user to pick
+        if Emoj1:getState() == 1
+        then
+            EMOx ="😇"
+            start=true
+        end
+        if Emoj2:getState() == 1
+        then
+            EMOx ="😂"
+            start=true
+        end
+        if Emoj3:getState() == 1
+        then
+            EMOx ="😩"
+            start=true
+        end
+    else
+        if EMOJItime>0
+        then
+            EMOJItime = EMOJItime - 1/40
+        end
+        if nextEmoji == true
+        then
+            emoji[#emoji +1] = Otherdude()
+            nextEmoji = false
+            EMOJItime= 10
+        end
+        – This sets a dark background color
+        background(40, 40, 50)
+
+        – [[for i =1,WIDTH
+        do
+        for k = 1,HEIGHT
+        do
+        –   strokeWidth(5)
+        –    fill(255, 0, 0, 255)
+        –      fontSize(50)
+        textMode(CENTER)
+        text(x,i,k)
+    end
+    end]]
+        – This sets the line thickness
+        for i = 5,WIDTH,20
+        do
+            for k = 5,HEIGHT-20,20
+            do
+                drawMessage("😛",i,k)
+            end
+        end
+
+        emoji[#emoji]:draw()
+        print(pointsEmo)
+    end
+    if EMOJItime<=0
+    then
+        EMOJItime= 0
+        background(0)
+        pushStyle()
+        textMode(CENTER)
+        fill(255)
+        font("AmericanTypewriter")
+        fontSize(22)
+        text("LOSE", WIDTH/2, HEIGHT/2)
+        text("Score is " .. pointsEmo, WIDTH/2, HEIGHT/2 -20)
+        popStyle()
+        EMReplay:draw()
+        EMRestart:draw()
+    end
+    pushStyle()
+    textMode(CENTER)
+    fill(255)
+    font("AmericanTypewriter-Bold")
+    fontSize(10)
+    text("Time Left: ".. math.floor(EMOJItime), WIDTH/2, HEIGHT-10)
+    popStyle()
+
+    if EMRestart:getState() == 1
+    then
+        initializeEmoji()
+        EMReplay:deselect()
+        Emoji:deselect()
+        Go:deselect()
+        gameMode=0
+        EMRestart:deselect()
+        popStyle()
+        resetAllButtons=true
+    end
+    if EMReplay:getState() == 1
+    then
+        initializeEmoji()
+        EMReplay:deselect()
+    end
+
+end
+
+
+
+function drawMessage(str, x, y)
+    pushStyle()
+    –    fill(255, 0, 0)
+    textMode(CENTER)
+    font("AmericanTypewriter-Bold")
+    fontSize(20)
+    text(str, x, y)
+    popStyle()
+end

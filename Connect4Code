@@ -1,0 +1,271 @@
+--# Main
+ – Connect 4
+
+ – Use this function to perform your initial setup
+function initializeConnect()
+    print("Hello World!")
+    Cpieces={}
+    Cwin=false
+    Cturn = 1
+    Crow1={-1,-1,-1,-1,-1,-1,-1,-1}
+    Crow2={-1,-1,-1,-1,-1,-1,-1,-1}
+    Crow3={-1,-1,-1,-1,-1,-1,-1,-1}
+    Crow4={-1,-1,-1,-1,-1,-1,-1,-1}
+    Crow5={-1,-1,-1,-1,-1,-1,-1,-1}
+    Crow6={-1,-1,-1,-1,-1,-1,-1,-1}
+    Crow7={-1,-1,-1,-1,-1,-1,-1,-1}
+    Crow8={-1,-1,-1,-1,-1,-1,-1,-1}
+    CBoard={Crow1,Crow2,Crow3,Crow4,Crow5,Crow6,Crow7,Crow8}
+    CFRestart= Button2("Main Menu", vec2(0, 0), 20, Vec2(WIDTH/2 -200 , HEIGHT/2),-1 , 200,60)
+    CFReplay= Button2("Play Again", vec2(0, 0), 20, Vec2(WIDTH/2 +200 , HEIGHT/2),-1 , 200,60)
+    Cstart=0
+end
+
+ – This function gets called once every frame
+function runConnect()
+    Cstart=Cstart+1
+    if Cwin ~= false
+    then
+        pushStyle()
+        background(0)
+        textMode(CENTER)
+        fill(255, 0, 0, 255)
+        font("AmericanTypewriter-Bold")
+        fontSize(80)
+        text(Cwin.. " team Wins!", WIDTH/2, HEIGHT/2)
+        popStyle()
+    end
+    CcheckWin()
+    if Cwin~= false
+    then
+
+        if Cwin ==1
+        then
+            print("win" .." ".. "yellow")
+        elseif Cwin==0
+        then
+            print("win".." ".."red")
+        end
+    end
+    – This sets a dark background color
+    background(20, 20, 182, 255)
+    for i = 1,8
+    do
+        for j= 1,8
+        do
+            pushStyle()
+            fill(255, 255, 255, 255)
+            ellipse(45+ (95*(j-1)),42+ (96*(i-1)),90,90)
+            popStyle()
+        end
+    end
+
+    for i = 1, #Cpieces
+    do
+        Cpieces[i]:draw()
+    end
+
+    strokeWidth(5)
+
+    – Do your drawing here
+    if Cwin ~= false
+    then
+        pushStyle()
+        textMode(CENTER)
+        fill(255, 0, 0, 255)
+        font("AmericanTypewriter-Bold")
+        fontSize(80)
+
+        if Cwin ==1
+        then
+            Cstr= "Yellow"
+            fill(255, 235, 0, 255)
+        end
+        if Cwin ==0
+        then
+            Cstr="Red"
+            fill(255,0,0)
+        end
+
+        text(Cstr.. " team Wins!", WIDTH/2, HEIGHT/2+300)
+
+        popStyle()
+    end
+
+    if CFRestart:getState() == 1
+    then
+        initializeConnect()
+        CFReplay:deselect()
+        connectFour:deselect()
+        Go:deselect()
+        gameMode=0
+        CFRestart:deselect()
+        popStyle()
+        resetAllButtons=true
+    end
+    if CFReplay:getState() == 1
+    then
+        initializeConnect()
+        CFReplay:deselect()
+    end
+    if Cwin ~= false
+    then
+        CFReplay:draw()
+        CFRestart:draw()
+    end
+end
+
+
+
+function CnextAvailable(x)
+    Ccontinue =true
+    for i = 1, 8
+    do
+        if CBoard[x][i] == -1 and Ccontinue == true
+        then
+
+            Ccontinue = false
+            return i
+        end
+    end
+    return 0
+end
+
+function CcheckWin()
+    if Cwin ==false
+    then
+        for i = 0,1
+        do
+            for f= 1,8
+            do
+                if CBoard[1][f]== i and CBoard[2][f]== i and CBoard[3][f] == i and CBoard [4][f]== i
+                then
+                    Cwin=i
+                end
+                if CBoard[2][f]== i and CBoard[3][f]== i and CBoard[4][f] == i and CBoard [5][f]== i
+                then
+                    Cwin=i
+                end
+                if CBoard[3][f]== i and CBoard[4][f]== i and CBoard[5][f] == i and CBoard [6][f]== i
+                then
+                    Cwin=i
+                end
+                if CBoard[4][f]== i and CBoard[5][f]== i and CBoard[6][f] == i and CBoard [7][f]== i
+                then
+                    Cwin=i
+                end
+                if CBoard[5][f]== i and CBoard[6][f]== i and CBoard[7][f] == i and CBoard [8][f]== i
+                then
+                    Cwin=i
+                end
+            end
+        end
+
+        for i = 0,1
+        do
+            for f= 1,8
+            do
+                if CBoard[f][1]== i and CBoard[f][2]== i and CBoard[f][3] == i and CBoard [f][4]== i
+                then
+                    Cwin=i
+                end
+                if CBoard[f][2]== i and CBoard[f][3]== i and CBoard[f][4] == i and CBoard [f][5]== i
+                then
+                    Cwin=i
+                end
+                if CBoard[f][3]== i and CBoard[f][4]== i and CBoard[f][5] == i and CBoard [f][6]== i
+                then
+                    Cwin=i
+                end
+                if CBoard[f][4]== i and CBoard[f][5]== i and CBoard[f][6] == i and CBoard [f][7]== i
+                then
+                    Cwin=i
+                end
+                if CBoard[f][5]== i and CBoard[f][6]== i and CBoard[f][7] == i and CBoard [f][8]== i
+                then
+                    Cwin=i
+                end
+            end
+        end
+
+        for i = 0,1
+        do
+            for f= 1,5
+            do
+                if CBoard[f][1]== i and CBoard[f+1][2]== i and CBoard[f+2][3] == i and CBoard [f+3][4]== i
+                then
+                    Cwin=i
+                end
+                if CBoard[f][2]== i and CBoard[f+1][3]== i and CBoard[f+2][4] == i and CBoard [f+3][5]== i
+                then
+                    Cwin=i
+                end
+                if CBoard[f][3]== i and CBoard[f+1][4]== i and CBoard[f+2][5] == i and CBoard [f+3][6]== i
+                then
+                    Cwin=i
+                end
+                if CBoard[f][4]== i and CBoard[f+1][5]== i and CBoard[f+2][6] == i and CBoard [f+3][7]== i
+                then
+                    Cwin=i
+                end
+                if CBoard[f][5]== i and CBoard[f+1][6]== i and CBoard[f+2][7] == i and CBoard [f+3][8]== i
+                then
+                    Cwin=i
+                end
+            end
+        end
+
+        for i = 0,1
+        do
+            for f= 4,8
+            do
+                if CBoard[f][1]== i and CBoard[f-1][2]== i and CBoard[f-2][3] == i and CBoard [f-3][4]== i
+                then
+                    Cwin=i
+                end
+                if CBoard[f][2]== i and CBoard[f-1][3]== i and CBoard[f-2][4] == i and CBoard [f-3][5]== i
+                then
+                    Cwin=i
+                end
+                if CBoard[f][3]== i and CBoard[f-1][4]== i and CBoard[f-2][5] == i and CBoard [f-3][6]== i
+                then
+                    Cwin=i
+                end
+                if CBoard[f][4]== i and CBoard[f-1][5]== i and CBoard[f-2][6] == i and CBoard [f-3][7]== i
+                then
+                    Cwin=i
+                end
+                if CBoard[f][5]== i and CBoard[f-1][6]== i and CBoard[f-2][7] == i and CBoard [f-3][8]== i
+                then
+                    Cwin=i
+                end
+            end
+        end
+
+    end
+
+end
+
+--# Pieces
+CPieces = class()
+
+function CPieces:init(x,y)
+    – you can accept and set parameters here
+    self.x = x
+    self.y=y
+    self.team = Cturn
+end
+
+function CPieces:draw()
+    strokeWidth(0)
+    pushStyle()
+    if self.team %2 ==0
+    then
+        fill(255,0,0)
+    elseif self.team %2 == 1
+    then
+        fill(249, 227, 17, 255)
+    end
+    ellipse(45+ (95*(self.x-1)),42+ (96*(self.y-1)),90,90)
+    popStyle()
+end

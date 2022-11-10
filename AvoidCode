@@ -1,0 +1,175 @@
+– Avoid
+
+function initializeAvoid()
+    print("Hello World!")
+    xOfSquare=0
+    x=0 – starting of square 1
+    y=0
+    x2=WIDTH – starting of sqaure 2
+    y2=HEIGHT
+    x3=WIDTH/2 – starting of square 3
+    y3=0
+    x4= WIDTH/2
+    y4= HEIGHT
+    x5=0
+    y5=HEIGHT/2
+    scoreA=0
+    continue1=true – when true game mode is on
+    start1=true – does not start until switch
+    parameter.integer("numsquares", 1,5) – num of moving squares
+    parameter.integer("SizeOfBox",50,150)
+    parameter.boolean("start",false) – starts game
+    parameter.boolean("restart",false) – restarts game ]]
+    numsquares=4 – initial num squares
+    Level =6
+    SizeOfBox=75
+    AvoidRestart= Button2("Main Menu", vec2(0, 0), 20, Vec2(WIDTH/2 -150 , 600),-1 , 200,60)
+    AvoidReplay= Button2("Play Again", vec2(0, 0), 20, Vec2(WIDTH/2 +150 , 600),-1 , 200,60)
+    AvoidPrep=0
+end
+
+ – This function gets called once every frame
+function runAvoid()
+    if AvoidPrep == 0
+    then
+        AvoidReplay:setState(1)
+        AvoidReplay:setState(-1)
+    end
+    AvoidPrep=1
+    pushStyle()
+    rectMode(CENTER)
+    if scoreA > 25
+    then
+        level = 8
+        numsquares=5
+        print("level 2")
+    end
+
+    if start1 ==true
+    then
+        displayMode(FULLSCREEN)
+    end
+
+    if continue1 == false
+    then
+        start1=false
+        displayMode(STANDARD)
+    end
+    if x<WIDTH-SizeOfBox and continue1 == true and start1==true – if square didnt reach end of screen
+    then
+        background(0)
+        fill(255, 0, 0, 255)
+        fontSize(200)
+        textMode(CENTER)
+        text(math.floor(scoreA).. " Points",WIDTH/2,HEIGHT/2)
+        fill(255)
+        rect(x,y,SizeOfBox,SizeOfBox)
+        – move box
+        x=x+Level
+        y=y+Level
+    else
+        fill(0)
+        rect(WIDTH/2,HEIGHT/2,WIDTH,HEIGHT)
+        x=0
+        y=math.random(0,HEIGHT- 300)
+    end
+    if x2>SizeOfBox and continue1==true and start1==true and numsquares>= 2
+    then
+        fill(255)
+        rect(x2,y2,SizeOfBox,SizeOfBox)
+        x2=x2-Level
+        y2=y2-Level
+    else
+        fill(0)
+        x2=math.random(WIDTH-100,WIDTH)
+        y2=math.random(100, HEIGHT)
+
+    end
+
+    if y3< HEIGHT-SizeOfBox and continue1==true and start1==true and numsquares>= 3
+    then
+        fill(255)
+        rect(x3,y3,SizeOfBox,SizeOfBox)
+        y3=y3+ 2*Level
+    else
+        fill(0)
+        x3=math.random(0,WIDTH)
+        y3=0
+
+    end
+    if y4> SizeOfBox and continue==true and start1==true and numsquares>= 4
+    then
+        fill(255)
+        rect(x4,y4,SizeOfBox,SizeOfBox)
+        y4=y4- 2*Level
+    else
+        fill(0)
+        x4=math.random(0,WIDTH)
+        y4=HEIGHT
+    end
+
+    if x5<WIDTH-SizeOfBox and continue1==true and start1==true and numsquares>= 5
+    then
+        fill(255)
+        rect(x5,y5,SizeOfBox,SizeOfBox)
+
+        x5=x5+Level
+        y5=y5
+
+    else
+        fill(0)
+
+        x5=0
+        y5=math.random(0, HEIGHT)
+
+    end
+
+    if continue1 == false
+    then
+        background(255, 0, 0, 255)
+        textSize(200)
+
+        fill(0)
+        fontSize(100)
+        text("YOU LOSE", WIDTH/2,HEIGHT/2)
+        fontSize(50)
+        text("Final Score:" .. math.floor(scoreFinal) ,WIDTH/2, HEIGHT/2-80)
+        text("Time Ellapsed " .. math.floor((scoreFinal)/2) .. " Seconds", WIDTH/2, HEIGHT/2+80)
+        scoreA=0
+        AvoidRestart:draw()
+        AvoidReplay:draw()
+        if AvoidRestart:getState() == 1
+        then
+            start1=true
+            continue1= true
+            AvoidReplay:deselect()
+            Avoid:deselect()
+            Go:deselect()
+            gameMode=0
+            AvoidRestart:deselect()
+            popStyle()
+
+        resetAllButtons=true
+        end
+        if AvoidReplay:getState() == 1
+        then
+            start1=true
+            continue1= true
+            AvoidReplay:deselect()
+        end
+    end
+    if restart == true
+    then
+        continue1=true
+        restart=false
+        start1= false
+    end
+    if xOfSquare>0 and continue == true
+    then
+        pushStyle()
+        fill(255, 255, 255, 255)
+        ellipse(xOfSquare,YOfSquare,30)
+        popStyle()
+    end
+    popStyle()
+end

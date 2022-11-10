@@ -1,0 +1,353 @@
+function initializekeepIn()
+
+    –     print("Hello World!")
+    kb1=kBall(WIDTH/2,HEIGHT/2,0)
+    kx1=0
+    kx2=0
+    ky1=0
+    ky2=0
+    kex1=0
+    kex2=0
+    kyi1=0
+    kyi2=0
+    kgo=false
+    KIstartT=0
+    KIRestart= Button2("Main Menu", vec2(0, 0), 20, Vec2(WIDTH/2 -300 , HEIGHT-100),-1 , 200,60)
+    KIReplay= Button2("Play Again", vec2(0, 0), 20, Vec2(WIDTH/2 +300 , HEIGHT-100),-1 , 200,60)
+end
+
+ – This function gets called once every frame
+function runkeepIn()
+    KIstartT=KIstartT+1
+    displayMode(FULLSCREEN)
+    – This sets a dark background color
+    background(40, 40, 50)
+    strokeWidth(5)
+    line(0,HEIGHT/2,WIDTH,HEIGHT/2)
+    line(WIDTH/2,HEIGHT,WIDTH/2,0)
+    KIRestart:draw()
+    KIReplay:draw()
+    – This sets the line thickness
+    –    strokeWidth(5)
+    if kgo==true
+    then
+        r1:draw()
+    end
+    – Do your drawing here
+    kb1:move()
+    kb1:draw()
+    print(kb1.direction)
+
+    if KIRestart:getState() == 1
+    then
+        initializekeepIn()
+        KIReplay:deselect()
+        keepIn:deselect()
+        Go:deselect()
+        gameMode=0
+        KIRestart:deselect()
+        popStyle()
+        resetAllButtons=true
+    end
+    if KIReplay:getState() == 1
+    then
+        initializekeepIn()
+        KIReplay:deselect()
+    end
+end
+
+
+--# Ball
+kBall = class()
+
+function kBall:init(x,y,th)
+    – you can accept and set parameters here
+    self.x = x
+    self.y=y
+    self.timesHit = th
+    self.directionM=1
+    self.RL=1
+    self.timesHit=0
+end
+
+function kBall:draw()
+    ellipse(self.x,self.y,50)
+    if self.x<0 or self.x>WIDTH or self.y<0 or self.y>HEIGHT
+    then
+        background(0)
+        stroke(255)
+        text("YOU LOSE", WIDTH/2, HEIGHT/2)
+        text("Score ".. self.timesHit,WIDTH/2,HEIGHT/2-100)
+        KIRestart:draw()
+        KIReplay:draw()
+    end
+
+    – Codea does not automatically call this method
+end
+function kBall:move()
+    –   self:timesHit()
+    if middle==true
+    then
+        self.x = WIDTH/2
+        self.y=HEIGHT/2
+        middle=false
+    end
+
+    if self.RL ==0 and self.directionM==1
+    then
+        self.x=self.x+2 + (self.timesHit/2)
+        –   print("print")
+    elseif self.RL==1 and self.directionM==1
+    then
+        self.x=self.x-2 - (self.timesHit/2)
+
+        –        print("HI")
+    end
+    if middle==true
+    then
+        self.x = WIDTH/2
+        self.y=HEIGHT/2
+        middle=false
+    end
+    if self.RL==0 and self.directionM==2
+    then
+        self.y=self.y+2 + (self.timesHit/2)
+        –   print("print")
+    elseif self.RL==1 and self.directionM==2
+    then
+        self.y=self.y-2 - (self.timesHit/2)
+        –    self.direction=self.direction-1
+        –        print("HI")
+    end
+end
+
+
+
+
+
+--# Ramp
+Ramp = class()
+
+function Ramp:init(x1,y1,x2,y2)
+    – you can accept and set parameters here
+    self.x1=x1
+    self.x2=x2
+    self.y1=y1
+    self.y2=y2
+end
+
+function Ramp:draw()
+    pushStyle()
+    stroke(255)
+    strokeWidth(20)
+    line(self.x1,self.y1,self.x2, self.y2)
+    – Codea does not automatically call this method
+    if kb1.directionM==1
+    then
+        if math.abs(kb1.x-self.x1)<10 and kb1.y< self.y1 and kb1.y>self.y2
+        then
+            kb1.timesHit=kb1.timesHit+1
+            middle=true
+
+            kb1.directionM = math.random(1,2)
+            kb1.RL=math.random(0,1)
+
+        end
+
+    end
+    if kb1.directionM==2
+    then
+        if math.abs(kb1.y-self.y1)<10 and kb1.x< self.x1 and kb1.x>self.x2
+        then
+            kb1.timesHit=kb1.timesHit+1
+            middle=true
+
+            kb1.directionM = math.random(1,2)
+            kb1.RL=math.random(0,1)
+
+
+        end
+
+    end
+    popStyle()
+end
+
+function Ramp:touched(touch)
+    – Codea does not automatically call this method
+endfunction initializekeepIn()
+
+    –     print("Hello World!")
+    kb1=kBall(WIDTH/2,HEIGHT/2,0)
+    kx1=0
+    kx2=0
+    ky1=0
+    ky2=0
+    kex1=0
+    kex2=0
+    kyi1=0
+    kyi2=0
+    kgo=false
+    KIstartT=0
+    KIRestart= Button2("Main Menu", vec2(0, 0), 20, Vec2(WIDTH/2 -300 , HEIGHT-100),-1 , 200,60)
+    KIReplay= Button2("Play Again", vec2(0, 0), 20, Vec2(WIDTH/2 +300 , HEIGHT-100),-1 , 200,60)
+end
+
+ – This function gets called once every frame
+function runkeepIn()
+    KIstartT=KIstartT+1
+    displayMode(FULLSCREEN)
+    – This sets a dark background color
+    background(40, 40, 50)
+    strokeWidth(5)
+    line(0,HEIGHT/2,WIDTH,HEIGHT/2)
+    line(WIDTH/2,HEIGHT,WIDTH/2,0)
+    KIRestart:draw()
+    KIReplay:draw()
+    – This sets the line thickness
+    –    strokeWidth(5)
+    if kgo==true
+    then
+        r1:draw()
+    end
+    – Do your drawing here
+    kb1:move()
+    kb1:draw()
+    print(kb1.direction)
+
+    if KIRestart:getState() == 1
+    then
+        initializekeepIn()
+        KIReplay:deselect()
+        keepIn:deselect()
+        Go:deselect()
+        gameMode=0
+        KIRestart:deselect()
+        popStyle()
+        resetAllButtons=true
+    end
+    if KIReplay:getState() == 1
+    then
+        initializekeepIn()
+        KIReplay:deselect()
+    end
+end
+
+
+--# Ball
+kBall = class()
+
+function kBall:init(x,y,th)
+    – you can accept and set parameters here
+    self.x = x
+    self.y=y
+    self.timesHit = th
+    self.directionM=1
+    self.RL=1
+    self.timesHit=0
+end
+
+function kBall:draw()
+    ellipse(self.x,self.y,50)
+    if self.x<0 or self.x>WIDTH or self.y<0 or self.y>HEIGHT
+    then
+        background(0)
+        stroke(255)
+        text("YOU LOSE", WIDTH/2, HEIGHT/2)
+        text("Score ".. self.timesHit,WIDTH/2,HEIGHT/2-100)
+        KIRestart:draw()
+        KIReplay:draw()
+    end
+
+    – Codea does not automatically call this method
+end
+function kBall:move()
+    –   self:timesHit()
+    if middle==true
+    then
+        self.x = WIDTH/2
+        self.y=HEIGHT/2
+        middle=false
+    end
+
+    if self.RL ==0 and self.directionM==1
+    then
+        self.x=self.x+2 + (self.timesHit/2)
+        –   print("print")
+    elseif self.RL==1 and self.directionM==1
+    then
+        self.x=self.x-2 - (self.timesHit/2)
+
+        –        print("HI")
+    end
+    if middle==true
+    then
+        self.x = WIDTH/2
+        self.y=HEIGHT/2
+        middle=false
+    end
+    if self.RL==0 and self.directionM==2
+    then
+        self.y=self.y+2 + (self.timesHit/2)
+        –   print("print")
+    elseif self.RL==1 and self.directionM==2
+    then
+        self.y=self.y-2 - (self.timesHit/2)
+        –    self.direction=self.direction-1
+        –        print("HI")
+    end
+end
+
+
+
+
+
+--# Ramp
+Ramp = class()
+
+function Ramp:init(x1,y1,x2,y2)
+    – you can accept and set parameters here
+    self.x1=x1
+    self.x2=x2
+    self.y1=y1
+    self.y2=y2
+end
+
+function Ramp:draw()
+    pushStyle()
+    stroke(255)
+    strokeWidth(20)
+    line(self.x1,self.y1,self.x2, self.y2)
+    – Codea does not automatically call this method
+    if kb1.directionM==1
+    then
+        if math.abs(kb1.x-self.x1)<10 and kb1.y< self.y1 and kb1.y>self.y2
+        then
+            kb1.timesHit=kb1.timesHit+1
+            middle=true
+
+            kb1.directionM = math.random(1,2)
+            kb1.RL=math.random(0,1)
+
+        end
+
+    end
+    if kb1.directionM==2
+    then
+        if math.abs(kb1.y-self.y1)<10 and kb1.x< self.x1 and kb1.x>self.x2
+        then
+            kb1.timesHit=kb1.timesHit+1
+            middle=true
+
+            kb1.directionM = math.random(1,2)
+            kb1.RL=math.random(0,1)
+
+
+        end
+
+    end
+    popStyle()
+end
+
+function Ramp:touched(touch)
+    – Codea does not automatically call this method
+end

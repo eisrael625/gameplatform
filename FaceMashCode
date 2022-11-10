@@ -1,0 +1,127 @@
+– Face Mash
+
+ – Use this function to perform your initial setup
+function initializeFaceMash()
+    cameraSource(CAMERA_FRONT)
+    MashRestart= Button2("Main Menu", vec2(0, 0), 20, Vec2(WIDTH/2 -300 , 500),-1 , 200,60)
+    MashReplay= Button2("Play Again", vec2(0, 0), 20, Vec2(WIDTH/2 +300 , 500),-1 , 200,60)
+    b1MASH = Button("image 1", vec2(50,50), color(255,0,0), color(0,255,0), 100,60,1)
+    b1MASH.action = function() b1BtnTouchedE()
+    end
+    b2MASH = Button("image 2", vec2(400,50), color(255,0,0), color(0,255,0), 100,60,1)
+    b2MASH.action = function() b2BtnTouchedE()
+    end
+    start8=0
+    x=0
+    one=false
+    two=false
+    three=false
+    go1=0
+    go2=0
+    image1=image(WIDTH,HEIGHT)
+end
+function b1BtnTouchedE()
+    for i = 1,10
+    do
+        image1= image(CAMERA)
+    end
+    one=true
+    print("pic one taken")
+
+end
+
+function b2BtnTouchedE()
+    for i = 1,10
+    do
+        image2= image(CAMERA)
+    end
+    image3 = image2:copy()
+    two=true
+    print("pic two taken")
+end
+
+function runFaceMash()
+    start8=start8+1
+    background(0)
+    if one==true and three==false
+    then
+        rect(0,100,100,50)
+        pushStyle()
+        stroke(0)
+        fill(0)
+        drawMessage("TAKEN",40,110,30,30)
+
+        popStyle()
+        sprite(image1,100,HEIGHT-500,200,200)
+    end
+
+    if two==true and three==false
+    then
+        rect(350,100,100,50)
+        pushStyle()
+        stroke(0)
+        fill(0)
+        drawMessage("TAKEN",390,110,30,30)
+
+        popStyle()
+        sprite(image2,WIDTH/2,HEIGHT/2,200,200)
+    end
+    if three == false
+    then
+        pushStyle()
+        sprite( CAMERA, WIDTH/2, HEIGHT - 100, 600, 400 )
+        noFill()
+        stroke(255)
+        strokeWidth(2)
+        ellipse(WIDTH/2, HEIGHT-170, 150,250)
+        ellipse(WIDTH/2 -30, HEIGHT-140, 40)
+        ellipse(WIDTH/2 +30, HEIGHT-140, 40)
+        line(WIDTH/2-30, HEIGHT-240, WIDTH/2+30, HEIGHT-240)
+        popStyle()
+    end
+    b1MASH:draw()
+    b2MASH:draw()
+    if one==true and two==true then
+        for x3= 1,image1.width,2
+        do
+            for y3 = 1,image1.height
+            do
+                r,g,b= image1:get(x3,y3)
+                image2:set(x3,y3,color(r,g,b))
+                three= true
+            end
+        end
+    end
+
+    if three== true
+    then
+        sprite(image2,WIDTH/2,HEIGHT/2,WIDTH,HEIGHT)
+
+
+        sprite(image1,100,HEIGHT-100,200,200)
+
+        sprite(image3,WIDTH-100,HEIGHT-100,200,200)
+        MashReplay:draw()
+        MashRestart:draw()
+    end
+    x=x+1
+
+    strokeWidth(5)
+
+    if MashRestart:getState() == 1
+    then
+        initializeFaceMash()
+        MashReplay:deselect()
+        FaceMash:deselect()
+        Go:deselect()
+        gameMode=0
+        MashRestart:deselect()
+        popStyle()
+        resetAllButtons=true
+    end
+    if MashReplay:getState() == 1
+    then
+        initializeFaceMash()
+        MashReplay:deselect()
+    end
+end
